@@ -6,8 +6,9 @@ const About = lazy(() => import("./pages/About.jsx"));
 const Chat = lazy(() => import("./pages/Chat.jsx"));
 const Group = lazy(() => import("./pages/Group.jsx"));
 const Login = lazy(() => import("./pages/Login.jsx"));
+const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
-let user = false;
+let user = true;
 
 function App() {
   return (
@@ -15,18 +16,21 @@ function App() {
       <BrowserRouter>
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
+            <Route element={<ProtectRoute user={user} />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/chat/:chatId" element={<Chat />} />
+              <Route path="/group" element={<Group />} />
+            </Route>
             <Route
-              path="/"
+              path="/login"
               element={
-                <ProtectRoute user={user}>
-                  <Home />
+                <ProtectRoute user={!user} redirect="/">
+                  <Login />
                 </ProtectRoute>
               }
             />
-            <Route path="/about" element={<About />} />
-            <Route path="/chat/:chatId" element={<Chat />} />
-            <Route path="/group" element={<Group />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
